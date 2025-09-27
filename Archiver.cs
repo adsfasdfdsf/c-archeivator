@@ -35,7 +35,14 @@ public static class Archiver
                 }
                 else
                 {
-                    outputLine += String.Format("{0}{1}", curCnt, lastC);
+                    if (curCnt == 1)
+                    {
+                        outputLine += lastC;
+                    } 
+                    else 
+                    {
+                        outputLine += String.Format("{0}{1}", curCnt, lastC);
+                    }
                 }
                 curCnt = 1;
                 lastC = c;
@@ -50,7 +57,14 @@ public static class Archiver
         }
         else
         {
-            outputLine += String.Format("{0}{1}", curCnt, lastC);
+            if (curCnt == 1)
+            {
+                outputLine += lastC;
+            } 
+            else 
+            {
+                outputLine += String.Format("{0}{1}", curCnt, lastC);
+            }
         }
 
         return outputLine;
@@ -64,7 +78,25 @@ public static class Archiver
     /// </summary>
     public static string DecompressString(string compressed)
     {
-        throw new NotImplementedException("implement me");
+        string outputLine = "";
+        string num = "";
+        foreach (char c in compressed)
+        {
+            if (Char.IsDigit(c))
+            {
+                num += c;
+            }
+            else if (num == "")
+            {
+                outputLine += c;
+            }
+            else
+            {
+                outputLine += string.Concat(Enumerable.Repeat(c, Int32.Parse(num)));
+                num = "";
+            }
+        }
+        return outputLine;
     }
 
     /// <summary>
@@ -74,7 +106,12 @@ public static class Archiver
     /// </summary>
     public static void WriteRun(StringBuilder output, char symbol, int count)
     {
-        throw new NotImplementedException("implement me");
+        if (count == 1)
+        {
+            output.Append(symbol);
+            return;
+        }
+        output.Append($"{count}{symbol}");
     }
     
 }
