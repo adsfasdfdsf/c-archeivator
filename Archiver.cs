@@ -24,8 +24,7 @@ public static class Archiver
             if (lastC == null)
             {
                 lastC = c;
-                curCnt = 1;
-                continue;
+                curCnt = 0;
             }
             if (c != lastC)
             {
@@ -48,7 +47,15 @@ public static class Archiver
                 lastC = c;
                 continue;
             }
-            curCnt += 1;
+
+            if (lastC == '\\')
+            {
+                curCnt += 1;
+            }
+            else
+            {
+                curCnt += 1;
+            }
         }
 
         if (Char.IsDigit((char)lastC) && lastC != '\\')
@@ -80,18 +87,21 @@ public static class Archiver
     {
         string outputLine = "";
         string num = "";
-        bool isNumber = false;
+        char? lastC = null;
+        bool isSpecial = false;
         foreach (char c in compressed)
         {
-            if (Char.IsDigit(c) && !isNumber)
+            if (Char.IsDigit(c) && !isSpecial)
             {
                 num += c;
             }
-            else if (Char.IsDigit(c) && isNumber)
+            else if (isSpecial)
             {
+                
                 outputLine += string.Concat(Enumerable.Repeat(c, Int32.Parse(num)));
-                isNumber = false;
+                isSpecial = false;
                 num = "";
+                lastC = null;
             }
             else if (num == "")
             {
@@ -99,7 +109,8 @@ public static class Archiver
             }
             else if (c == '\\')
             {
-                isNumber = true;
+                isSpecial = true;
+                lastC = '\\';
             }
             else
             {
@@ -107,6 +118,12 @@ public static class Archiver
                 num = "";
             }
         }
+
+        if (lastC == '\\')
+        {
+            outputLine += string.Concat(Enumerable.Repeat(lastC, Int32.Parse(num)));
+        }
+        
         return outputLine;
     }
 
