@@ -29,31 +29,43 @@ public static class Archiver
             }
             if (c != lastC)
             {
-                if (curCnt == 1)
+                if (Char.IsDigit((char)lastC) && lastC != '\\')
                 {
-                    outputLine += lastC;
-                } 
-                else 
-                {
-                    outputLine += String.Format("{0}{1}", curCnt, lastC);
+                    outputLine += String.Format("{0}\\{1}", curCnt, lastC);
                 }
-                
+                else
+                {
+                    if (curCnt == 1)
+                    {
+                        outputLine += lastC;
+                    } 
+                    else 
+                    {
+                        outputLine += String.Format("{0}{1}", curCnt, lastC);
+                    }
+                }
                 curCnt = 1;
                 lastC = c;
                 continue;
             }
             curCnt += 1;
         }
-        
-        if (curCnt == 1)
+
+        if (Char.IsDigit((char)lastC) && lastC != '\\')
         {
-            outputLine += lastC;
-        } 
-        else 
-        {
-            outputLine += String.Format("{0}{1}", curCnt, lastC);
+            outputLine += String.Format("{0}\\{1}", curCnt, lastC);
         }
-        
+        else
+        {
+            if (curCnt == 1)
+            {
+                outputLine += lastC;
+            } 
+            else 
+            {
+                outputLine += String.Format("{0}{1}", curCnt, lastC);
+            }
+        }
 
         return outputLine;
     }
@@ -68,15 +80,26 @@ public static class Archiver
     {
         string outputLine = "";
         string num = "";
+        bool isNumber = false;
         foreach (char c in compressed)
         {
-            if (Char.IsDigit(c))
+            if (Char.IsDigit(c) && !isNumber)
             {
                 num += c;
+            }
+            else if (Char.IsDigit(c) && isNumber)
+            {
+                outputLine += string.Concat(Enumerable.Repeat(c, Int32.Parse(num)));
+                isNumber = false;
+                num = "";
             }
             else if (num == "")
             {
                 outputLine += c;
+            }
+            else if (c == '\\')
+            {
+                isNumber = true;
             }
             else
             {
