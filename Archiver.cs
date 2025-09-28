@@ -29,43 +29,31 @@ public static class Archiver
             }
             if (c != lastC)
             {
-                if (Char.IsDigit((char)lastC) && lastC != '\\')
+                if (curCnt == 1)
                 {
-                    outputLine += String.Format("{0}\\{1}", curCnt, lastC);
-                }
-                else
+                    outputLine += lastC;
+                } 
+                else 
                 {
-                    if (curCnt == 1)
-                    {
-                        outputLine += lastC;
-                    } 
-                    else 
-                    {
-                        outputLine += String.Format("{0}{1}", curCnt, lastC);
-                    }
+                    outputLine += String.Format("{0}{1}", curCnt, lastC);
                 }
+                
                 curCnt = 1;
                 lastC = c;
                 continue;
             }
             curCnt += 1;
         }
-
-        if (Char.IsDigit((char)lastC) && lastC != '\\')
+        
+        if (curCnt == 1)
         {
-            outputLine += String.Format("{0}\\{1}", curCnt, lastC);
-        }
-        else
+            outputLine += lastC;
+        } 
+        else 
         {
-            if (curCnt == 1)
-            {
-                outputLine += lastC;
-            } 
-            else 
-            {
-                outputLine += String.Format("{0}{1}", curCnt, lastC);
-            }
+            outputLine += String.Format("{0}{1}", curCnt, lastC);
         }
+        
 
         return outputLine;
     }
